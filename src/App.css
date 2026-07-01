@@ -6,7 +6,7 @@ body {
 }
 
 .app {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -14,13 +14,14 @@ body {
 header {
   background-color: #2d6cdf;
   color: white;
-  padding: 25px;
+  padding: 28px;
   border-radius: 12px;
   text-align: center;
 }
 
 header h1 {
   color: white;
+  margin-bottom: 8px;
 }
 
 .navbar {
@@ -40,8 +41,12 @@ header h1 {
 }
 
 .welcome-card,
+.form-card,
+.search-card,
+.section-card,
+.medication-card,
 .appointment-card,
-.medication-card {
+.caregiver-card {
   background-color: white;
   margin-top: 20px;
   padding: 20px;
@@ -50,18 +55,53 @@ header h1 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.medication-card h3 {
-  margin-top: 0;
-}
-
 h2 {
   color: #2d6cdf;
   text-align: center;
 }
 
-input {
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  background-color: white;
+  padding: 18px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.summary-card h3 {
+  color: #2d6cdf;
+  font-size: 16px;
+}
+
+.summary-card p {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.medication-group {
+  margin-top: 25px;
+}
+
+.medication-card h3,
+.appointment-card h3,
+.caregiver-card h3 {
+  margin-top: 0;
+  color: #2d6cdf;
+}
+
+input,
+select {
   width: 100%;
   padding: 12px;
+  margin-bottom: 12px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -69,13 +109,12 @@ input {
 }
 
 button {
-  display: block;
-  margin: 0 auto;
   background-color: #2d6cdf;
   color: white;
   border: none;
-  padding: 12px 18px;
-  font-size: 16px;
+  padding: 10px 14px;
+  margin: 5px 5px 5px 0;
+  font-size: 15px;
   border-radius: 8px;
   cursor: pointer;
 }
@@ -84,9 +123,61 @@ button:hover {
   background-color: #1d56bb;
 }
 
+.secondary-button {
+  background-color: #6c757d;
+}
+
+.secondary-button:hover {
+  background-color: #555f66;
+}
+
+.delete-button {
+  background-color: #d9534f;
+}
+
+.delete-button:hover {
+  background-color: #b52b27;
+}
+
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.taken {
+  background-color: #28a745;
+}
+
+.pending {
+  background-color: #f0ad4e;
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  font-weight: bold;
+}
+
+.emergency {
+  border-left-color: #d9534f;
+}
+
 .footer {
   margin-top: 25px;
   padding: 20px;
   text-align: center;
   color: #555;
+}
+
+@media (max-width: 800px) {
+  .summary-section {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar a {
+    display: block;
+    margin: 10px 0;
+  }
 }
