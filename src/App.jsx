@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
 import MedicationForm from "./components/MedicationForm";
@@ -6,57 +6,99 @@ import MedicationList from "./components/MedicationList";
 import "./App.css";
 
 function App() {
-  const [medications, setMedications] = useState([
-    {
-      id: 1,
-      name: "Blood Pressure Medicine",
-      dosage: "1 Tablet",
-      time: "8:00 AM",
-      status: "Taken",
-      category: "Morning",
-    },
-    {
-      id: 2,
-      name: "Vitamin D",
-      dosage: "1 Capsule",
-      time: "12:00 PM",
-      status: "Taken",
-      category: "Afternoon",
-    },
-    {
-      id: 3,
-      name: "Heart Medication",
-      dosage: "1 Tablet",
-      time: "9:00 PM",
-      status: "Pending",
-      category: "Evening",
-    },
-  ]);
-
+  const [medications, setMedications] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    fetchMedications();
+  }, []);
+
+  function fetchMedications() {
+    fetch("http://localhost:3001/api/medications")
+      .then((response) => response.json())
+      .then((data) => setMedications(data))
+      .catch((error) => console.error("Error loading medications:", error));
+  }
+
   function addMedication(newMedication) {
-    setMedications([...medications, newMedication]);
+    fetch("http://localhost:3001/api/medications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newMedication),
+    })
+      .then((response) => response.json())
+      .then((data) => setMedications([...medications, data]))
+      .catch((error) => console.error("Error adding medication:", error));
   }
 
   function deleteMedication(id) {
-    setMedications(medications.filter((medication) => medication.id !== id));
+    fetch(`http://localhost:3001/api/medications/${id}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setMedications(
+          medications.filter((medication) => medication.id !== id)
+        );
+      })
+      .catch((error) => console.error("Error deleting medication:", error));
   }
 
   function markAsTaken(id) {
-    setMedications(
-      medications.map((medication) =>
-        medication.id === id ? { ...medication, status: "Taken" } : medication
-      )
+    const medicationToUpdate = medications.find(
+      (medication) => medication.id === id
     );
+
+    const updatedMedication = {
+      ...medicationToUpdate,
+      status: "Taken",
+    };
+
+    fetch(`http://localhost:3001/api/medications/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedMedication),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMedications(
+          medications.map((medication) =>
+            medication.id === id ? data : medication
+          )
+        );
+      })
+      .catch((error) => console.error("Error updating medication:", error));
   }
 
-  function editMedication(id, updatedMedication) {
-    setMedications(
-      medications.map((medication) =>
-        medication.id === id ? { ...medication, ...updatedMedication } : medication
-      )
+  function editMedication(id, updatedMedicationInfo) {
+    const currentMedication = medications.find(
+      (medication) => medication.id === id
     );
+
+    const updatedMedication = {
+      ...currentMedication,
+      ...updatedMedicationInfo,
+    };
+
+    fetch(`http://localhost:3001/api/medications/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedMedication),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMedications(
+          medications.map((medication) =>
+            medication.id === id ? data : medication
+          )
+        );
+      })
+      .catch((error) => console.error("Error editing medication:", error));
   }
 
   const filteredMedications = medications.filter((medication) =>
@@ -64,8 +106,12 @@ function App() {
   );
 
   const totalMedications = medications.length;
-  const takenMedications = medications.filter((med) => med.status === "Taken").length;
-  const pendingMedications = medications.filter((med) => med.status === "Pending").length;
+  const takenMedications = medications.filter(
+    (medication) => medication.status === "Taken"
+  ).length;
+  const pendingMedications = medications.filter(
+    (medication) => medication.status === "Pending"
+  ).length;
 
   return (
     <div className="app">

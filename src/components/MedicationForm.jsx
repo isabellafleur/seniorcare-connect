@@ -14,7 +14,6 @@ function MedicationForm({ addMedication }) {
     }
 
     addMedication({
-      id: Date.now(),
       name,
       dosage,
       time,
